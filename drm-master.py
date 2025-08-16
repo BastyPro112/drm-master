@@ -116,10 +116,7 @@ class DRMMaster(QtWidgets.QMainWindow):
         self.installEventFilter(self)
 
     # ---------------- helpers ----------------
-    def validate_mpd(self, url: str) -> bool:
-        if not url:
-            return False
-        return bool(re.search(r"\.mpd(\?|$)", url, re.IGNORECASE))
+    
 
     def extract_key_after_colon(self, kidkey: str) -> str:
         if ":" in kidkey:
@@ -154,9 +151,7 @@ class DRMMaster(QtWidgets.QMainWindow):
         url = self.url_edit.text().strip()
         kidkey = self.kidkey_edit.text().strip()
 
-        if not self.validate_mpd(url):
-            QtWidgets.QMessageBox.warning(self, "URL inválida", "Introduce una URL que contenga .mpd.")
-            return
+       
 
         key = self.extract_key_after_colon(kidkey)
         # If there's a KEY use ffplay to play Widevine; else use integrated libVLC
@@ -328,11 +323,7 @@ class DRMMaster(QtWidgets.QMainWindow):
             self.status.setText(f"Preparado para grabar por libVLC -> {self.record_path}")
             # if already playing, restart with sout
             if self.player.is_playing():
-                if not self.validate_mpd(url):
-                    QtWidgets.QMessageBox.warning(self, "URL inválida", "Introduce una URL que contenga .mpd.")
-                    self.recording = False
-                    self.record_btn.setText("Record")
-                    return
+                
                 self.player.stop()
                 media = self.make_media_with_recording(url, Path(self.record_path))
                 self.player.set_media(media)
